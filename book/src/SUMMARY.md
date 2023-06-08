@@ -1,3 +1,4 @@
 # Summary
 
-- [Chapter 1](./chapter_1.md)
+- [Introduce](./chapters/introduce.md)
+- [Output an Image](./chapters/chapter_1.md)
