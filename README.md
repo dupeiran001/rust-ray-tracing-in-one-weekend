@@ -1,4 +1,6 @@
 
+![](https://github.com/dupeiran001/rust-ray-tracing-in-one-weekend/actions/workflows/cargo_test_build.yaml/badge.svg)
+![](https://github.com/dupeiran001/rust-ray-tracing-in-one-weekend/actions/workflows/deploy_mdbook.yml/badge.svg)
 # Introduce
 
 [Ray-tracing in one weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) is a great introduction
