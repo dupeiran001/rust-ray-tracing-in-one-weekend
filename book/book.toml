@@ -4,3 +4,6 @@ language = "en"
 multilingual = false
 src = "src"
 title = "ray-tracing in one weekend"
+
+[output.html]
+git-repository-url = "https://github.com/dupeiran001/rust-ray-tracing-in-one-weekend"
