@@ -1,0 +1,6 @@
+[book]
+authors = ["杜沛然"]
+language = "en"
+multilingual = false
+src = "src"
+title = "ray-tracing in one weekend"
