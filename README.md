@@ -1,6 +1,7 @@
 
-![](https://github.com/dupeiran001/rust-ray-tracing-in-one-weekend/actions/workflows/cargo_test_build.yaml/badge.svg)
-![](https://github.com/dupeiran001/rust-ray-tracing-in-one-weekend/actions/workflows/deploy_mdbook.yml/badge.svg)
+![Cargo Build Badge](https://github.com/dupeiran001/rust-ray-tracing-in-one-weekend/actions/workflows/cargo_test_build.yaml/badge.svg)
+![GitHub Page Deploy Badge](https://github.com/dupeiran001/rust-ray-tracing-in-one-weekend/actions/workflows/deploy_mdbook.yml/badge.svg)
+
 # Introduce
 
 [Ray-tracing in one weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) is a great introduction
@@ -13,8 +14,8 @@ basic knowledge of Rust, which can be learned from [The Book](https://doc.rust-l
 
 # Usage
 
-This is a cargo project, and the **./book** dirrectory is a mdbook project. The online preview of this book can be 
-found here: [(Rust) ray-tracing in one weekend](https://dupeiran001.github.io/rust-ray-tracing-in-one-weekend/), or 
+This is a cargo project, and the **./book** directory is a mdbook project. The online preview of this book can be
+found here: [(Rust) ray-tracing in one weekend](https://dupeiran001.github.io/rust-ray-tracing-in-one-weekend/), or
 you can clone this repository and build your own static copy:
 
 ```bash
@@ -23,7 +24,7 @@ cd book
 mdbook serve --open
 ```
 
-And the source code can be run using: 
+And the source code can be run using:
 
 ```bash
 cargo run
@@ -31,4 +32,4 @@ cargo run
 
 # Contribution
 
-Any Contribution is Highly Welcomed!! No matter it's just a space alighment error or a code playground mark error, every contribution will be carefully treated!
+Any Contribution is Highly Welcomed!! No matter it's just a space alignment error or a code playground mark error, every contribution will be carefully treated!
