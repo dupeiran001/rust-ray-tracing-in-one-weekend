@@ -75,7 +75,7 @@ unit length vector because I think not doing that makes for simpler and slightly
 
 ![Camera geometry](../resources/pictures/fig-1.03-cam-geom.jpg)
 
-Below in code, the ray `r` goes to approximately the pixel centers(I won't worry about exactness for now because we'll add antialiasing later):
+Below in code, the ray `r` goes to approximately the pixel centers(I won't worry about exactness for now because we'll add anti-aliasing later):
 
 ```rust
 use crate::color::*;
