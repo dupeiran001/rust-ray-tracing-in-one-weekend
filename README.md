@@ -30,6 +30,21 @@ And the source code can be run using:
 cargo run
 ```
 
+which will generate the output to the stdout, and can be redirecting to a file using:
+
+```bash
+cargo build
+./target/debug/ray_tracing > image.ppm
+```
+on linux or
+```bash
+cargo build
+./target/debug/ray_tracing.exe > image.ppm
+```
+
+which will generate an output picture called image.ppm.
+of course, any marked commit can be used to generate the output of the corresponding chapter.
+
 # Contribution
 
 Any Contribution is Highly Welcomed!! No matter it's just a space alignment error or a code playground mark error, every contribution will be carefully treated!
