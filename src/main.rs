@@ -46,7 +46,18 @@ fn main() {
     eprintln!("\nDone");
 }
 
+fn hit_sphere(center: &Point3, radius: f64, r: &Ray) -> bool {
+    let oc: Vec3 = r.origin() - *center;
+    let a = Vec3::dot(&r.direction(), &r.direction());
+    let b = 2.0 * Vec3::dot(&oc, &r.direction());
+    let c = Vec3::dot(&oc, &oc) - radius * radius;
+    (b * b - 4.0 * a * c) > 0f64
+}
+
 fn ray_color(r: &Ray) -> Color {
+    if hit_sphere(&Point3::from(0f64, 0f64, -1f64), 0.5, r) {
+        return Color::from(1f64, 0f64, 0f64);
+    }
     let unit_direction: Vec3 = r.direction().unit_vector();
     let t = 0.5 * (unit_direction.y() + 1f64);
     (1f64 - t) * Color::from(1f64, 1f64, 1f64) + t * Color::from(0.5, 0.7, 1f64)
