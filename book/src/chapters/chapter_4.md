@@ -61,3 +61,5 @@ fn ray_color(r: &Ray) -> Color {
 What we get is this:
 
 ![A simple red sphere](../resources/pictures/img-1.03-red-sphere.png)
+
+Now this lacks all sorts of things — like shading and reflection rays and more than one object — but we are closer to halfway done than we are to our start! One thing to be aware of is that we tested whether the ray hits the sphere at all, but \\(t<0\\) solutions work fine. If you change your sphere center to \\(z=+1\\) you will get exactly the same picture because you see the things behind you. This is not a feature! We’ll fix those issues next.
