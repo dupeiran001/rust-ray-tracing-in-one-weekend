@@ -3,3 +3,5 @@
 *.css linguist-detectable=false
 *.js linguist-detectable=false
 *.md linguist-detectable=true
+
+*.ppm binary
