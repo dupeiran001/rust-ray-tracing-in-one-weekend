@@ -3,6 +3,7 @@ use std::rc::Rc;
 use hittable::HitRecord;
 use hittable::Hittable;
 
+use crate::camera::Camera;
 use crate::color::*;
 use crate::hittable_list::*;
 use crate::ray::*;
@@ -10,6 +11,7 @@ use crate::rtweekend::*;
 use crate::sphere::*;
 use crate::vec3::*;
 
+mod camera;
 mod color;
 mod hittable;
 mod hittable_list;
@@ -23,6 +25,7 @@ fn main() {
     const ASPECT_RATIO: f64 = 16f64 / 9f64;
     const IMAGE_WIDTH: i32 = 400;
     const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
+    const SAMPLES_PER_PIXEL: i32 = 100;
 
     // World
     let mut world = HittableList::new();
@@ -34,15 +37,7 @@ fn main() {
 
     // Camera
 
-    let viewport_height = 2f64;
-    let viewport_width = ASPECT_RATIO * viewport_height;
-    let focal_length = 1f64;
-
-    let origin = Point3::from(0f64, 0f64, 0f64);
-    let horizontal = Vec3::from(viewport_width, 0f64, 0f64);
-    let vertical = Vec3::from(0f64, viewport_height, 0f64);
-    let lower_left_corner =
-        origin - horizontal / 2f64 - vertical / 2f64 - Vec3::from(0f64, 0f64, focal_length);
+    let cam = Camera::new();
 
     // Render
 
@@ -51,16 +46,15 @@ fn main() {
     for j in (0..IMAGE_HEIGHT).rev() {
         eprintln!("\rScanlines remaining: {j}");
         for i in 0..IMAGE_WIDTH {
-            let u = (i as f64) / (IMAGE_WIDTH as f64 - 1f64);
-            let v = (j as f64) / (IMAGE_HEIGHT as f64 - 1f64);
+            let mut pixel_color: Color = Color::from(0.0, 0.0, 0.0);
+            for s in 0..SAMPLES_PER_PIXEL {
+                let u = (i as f64 + random_double()) / (IMAGE_WIDTH - 1) as f64;
+                let v = (j as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64;
+                let r = cam.get_ray(u, v);
 
-            let r: Ray = Ray::from(
-                origin,
-                lower_left_corner + u * horizontal + v * vertical - origin,
-            );
-            let pixel_color = ray_color(&r, &world);
-
-            write_color(std::io::stdout(), pixel_color).unwrap();
+                pixel_color += ray_color(&r, &world);
+            }
+            write_color(std::io::stdout(), pixel_color, SAMPLES_PER_PIXEL).unwrap();
         }
     }
     eprintln!("\nDone");
