@@ -8,3 +8,4 @@
 - [Adding a Sphere](./chapters/chapter_4.md)
 - [Surface Normals and Multiple Objects](./chapters/chapter_5.md)
 - [Antialiasing](./chapters/chapter_6.md)
+- [Diffuse Materials](./chapters/chapter_7.md)
