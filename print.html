@@ -1,0 +1,1634 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>ray-tracing in one weekend</title>
+        <meta name="robots" content="noindex" />
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="./theme/style.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="chapters/introduce.html">Introduce</a></li><li class="chapter-item expanded "><a href="chapters/chapter_1.html"><strong aria-hidden="true">1.</strong> Output an Image</a></li><li class="chapter-item expanded "><a href="chapters/chapter_2.html"><strong aria-hidden="true">2.</strong> The vec3 Struct</a></li><li class="chapter-item expanded "><a href="chapters/chapter_3.html"><strong aria-hidden="true">3.</strong> Rays, a Simple Camera, and Background</a></li><li class="chapter-item expanded "><a href="chapters/chapter_4.html"><strong aria-hidden="true">4.</strong> Adding a Sphere</a></li><li class="chapter-item expanded "><a href="chapters/chapter_5.html"><strong aria-hidden="true">5.</strong> Surface Normals and Multiple Objects</a></li><li class="chapter-item expanded "><a href="chapters/chapter_6.html"><strong aria-hidden="true">6.</strong> Antialiasing</a></li><li class="chapter-item expanded "><a href="chapters/chapter_7.html"><strong aria-hidden="true">7.</strong> Diffuse Materials</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">ray-tracing in one weekend</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dupeiran001/rust-ray-tracing-in-one-weekend" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <h1 id="introduce"><a class="header" href="#introduce">Introduce</a></h1>
+<p><a href="https://raytracing.github.io/books/RayTracingInOneWeekend.html">Ray-tracing in one weekend</a> is a great introduction
+to the computer graphics. It's originally based on c++, but I'm a big fan of rust. So I'd like to use rust to implement
+the code in the book. We should be able to finish it in one weekend, having a tracer and producing some great images.</p>
+<p>Rust is a bit different with c++, as it has a more strict static compiler. We'll need more effort to <strong>fight with compiler</strong>!
+My rust code maybe is not the most elegant solution, so <strong>any contribution is highly welcomed</strong>!</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="output-an-image"><a class="header" href="#output-an-image">Output an Image</a></h1>
+<h2 id="the-ppm-image-format"><a class="header" href="#the-ppm-image-format">The PPM Image Format</a></h2>
+<p>To build a render, we need to see an image. We choose the <a href="https://en.wikipedia.org/wiki/Netpbm">PPM image format</a>.
+Its inner format is this from Wikipeida:
+<img src="chapters/../resources/pictures/fig-1.01-ppm.jpg" alt="PPM Example" />
+First we need some code to output such an image.</p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    const IMAGE_WIDTH: i32 = 256;
+    const IMAGE_HEIGHT: i32 = 256;
+
+    println!(&quot;P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255&quot;);
+
+    for j in (0..IMAGE_HEIGHT).rev() {
+        for i in 0..IMAGE_WIDTH {
+            let r = (i as f64) / (IMAGE_WIDTH as f64 - 1 as f64);
+            let g = (j as f64) / (IMAGE_HEIGHT as f64 - 1 as f64);
+            let b = 0.25;
+
+            let ir: i32 = (255.999 * r) as i32;
+            let ig: i32 = (255.999 * g) as i32;
+            let ib: i32 = (255.999 * b) as i32;
+
+            println!(&quot;{ir} {ig} {ib}&quot;);
+        }
+    }
+}</code></pre></pre>
+<h2 id="creating-an-image-file"><a class="header" href="#creating-an-image-file">Creating an Image File</a></h2>
+<p>That's the content of our image file, but we need to redirect it to a file like this:</p>
+<pre><code class="language-bash">./target/debug/ray_tracing &gt; image.ppm
+</code></pre>
+<p>This works on Mac and Linux, and things should be similar on Windows, adding a .exe postfix should work.</p>
+<p>Open such image.ppm file using <strong>ToyViewer</strong> on my Mac or any other tool you prefer, we should get such image:</p>
+<p><img src="chapters/../resources/pictures/img-1.01-first-ppm-image.png" alt="PPM image" /></p>
+<p>And its content should be something like this when opened by a text editor.</p>
+<pre><code class="language-text">P3
+256 256
+255
+0 255 63
+1 255 63
+2 255 63
+3 255 63
+4 255 63
+5 255 63
+6 255 63
+7 255 63
+8 255 63
+9 255 63
+...
+</code></pre>
+<h2 id="adding-a-progress-indicator"><a class="header" href="#adding-a-progress-indicator">Adding a Progress Indicator</a></h2>
+<p>A rending process may cost lots of time. So we need an indicator to track the process and
+is easier to identify an infinite loop or some other errors.</p>
+<p>We just use the std::error channel as our info output:</p>
+<pre><pre class="playground"><code class="language-rust"> fn main() {
+<span class="boring">    const IMAGE_WIDTH: i32 = 256;
+</span><span class="boring">    const IMAGE_HEIGHT: i32 = 256;
+</span><span class="boring">
+</span><span class="boring">    println!(&quot;P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255&quot;);
+</span><span class="boring">
+</span>     for j in (0..IMAGE_HEIGHT).rev() {
+         eprintln!(&quot;\rScanlines remaining: {j}&quot;);
+<span class="boring">        for i in 0..IMAGE_WIDTH {
+</span><span class="boring">            let r = (i as f64) / (IMAGE_WIDTH as f64 - 1 as f64);
+</span><span class="boring">            let g = (j as f64) / (IMAGE_HEIGHT as f64 - 1 as f64);
+</span><span class="boring">            let b = 0.25;
+</span><span class="boring">
+</span><span class="boring">            let ir: i32 = (255.999 * r) as i32;
+</span><span class="boring">            let ig: i32 = (255.999 * g) as i32;
+</span><span class="boring">            let ib: i32 = (255.999 * b) as i32;
+</span><span class="boring">
+</span><span class="boring">            println!(&quot;{ir} {ig} {ib}&quot;);
+</span><span class="boring">        }
+</span>     }
+     eprintln!(&quot;\nDone&quot;);
+ }</code></pre></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="the-vec3-struct"><a class="header" href="#the-vec3-struct">The vec3 struct</a></h1>
+<p>Every one having used Cuda or some framework should be familiar with vec3 or .etc.
+Almost every graphic program have some structs for storing geometric vector or colors.
+In many systems these vectors are 4D (3D plus a homogeneous coordinate for geometry,
+and RGB plus an alpha transparency channel for colors). In our usage, three coordinates
+suffices. We'll use the same struct <code>vec3</code> for colors, locations, directions, offsets, whatever.
+Some people don’t like this because it doesn’t prevent you from doing something silly, like adding
+color to a location. They have a good point, but we’re going to always take the “less code” route when
+not obviously wrong. In spite of this, we do declare two aliases for <code>vec3</code>: <code>point3</code> and <code>color</code>.
+We use them only to clarify intent and use.</p>
+<h2 id="variables-and-methods"><a class="header" href="#variables-and-methods">Variables and Methods</a></h2>
+<p>We need a new file for our <code>vec3</code> struct. To do this, create a new file in the same folder as <code>main.rs</code>,
+naming <code>vec3.rs</code>, and add</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>mod vec3;
+<span class="boring">}</span></code></pre></pre>
+<p>to the top of the <code>main.rs</code>.</p>
+<p>Here is my implementation of <code>Vec3</code> struct</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use core::ops::*;
+
+#[derive(Debug)]
+pub struct Vec3 {
+    e: (f64, f64, f64),
+}
+
+pub type Point3 = Vec3;
+pub type Color = Vec3;
+
+impl Vec3 {
+    pub fn new() -&gt; Vec3 {
+        Vec3 {
+            e: (0f64, 0f64, 0f64),
+        }
+    }
+
+    pub fn from(e0: f64, e1: f64, e2: f64) -&gt; Vec3 {
+        Vec3 { e: (e0, e1, e2) }
+    }
+
+    pub fn x(&amp;self) -&gt; &amp;f64 {
+        &amp;self.e.0
+    }
+
+    pub fn y(&amp;self) -&gt; &amp;f64 {
+        &amp;self.e.1
+    }
+
+    pub fn z(&amp;self) -&gt; &amp;f64 {
+        &amp;self.e.2
+    }
+
+    pub fn length(&amp;self) -&gt; f64 {
+        self.length_squared().sqrt()
+    }
+
+    pub fn length_squared(&amp;self) -&gt; f64 {
+        self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>It's safe and convenient to implement clone and copy for our <code>Vec3</code> struct,
+as it can be cloned by only clone the memory, it's completely safe:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Clone for Vec3 {
+    fn clone(&amp;self) -&gt; Self {
+        Self {
+            e: (*self.x(), *self.y(), *self.z()),
+        }
+    }
+}
+
+impl Copy for Vec3 {}
+<span class="boring">}</span></code></pre></pre>
+<p>And then, implement some operator trait for it</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>impl Neg for Vec3 {
+    type Output = Vec3;
+
+    fn neg(self) -&gt; Self::Output {
+        Self {
+            e: (-self.x(), -self.y(), -self.z()),
+        }
+    }
+}
+
+impl AddAssign for Vec3 {
+    fn add_assign(&amp;mut self, rhs: Self) {
+        self.e.0 += rhs.x();
+        self.e.1 += rhs.y();
+        self.e.2 += rhs.z();
+    }
+}
+
+impl MulAssign&lt;f64&gt; for Vec3 {
+    fn mul_assign(&amp;mut self, rhs: f64) {
+        self.e.0 *= rhs;
+        self.e.1 *= rhs;
+        self.e.2 *= rhs;
+    }
+}
+
+impl DivAssign&lt;f64&gt; for Vec3 {
+    fn div_assign(&amp;mut self, rhs: f64) {
+        self.e.0 *= 1f64 / rhs;
+        self.e.1 *= 1f64 / rhs;
+        self.e.2 *= 1f64 / rhs;
+    }
+}
+
+impl Index&lt;i32&gt; for Vec3 {
+    type Output = f64;
+
+    fn index(&amp;self, index: i32) -&gt; &amp;Self::Output {
+        assert!(index &lt;= 2 &amp;&amp; index &gt;= 0);
+        match index {
+            0 =&gt; self.x(),
+            1 =&gt; self.y(),
+            2 =&gt; self.z(),
+            _ =&gt; unreachable!(),
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>as well as some tests:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(test)]
+mod test {
+    use super::Vec3;
+
+    #[test]
+    fn basic_ops() {
+        let vec1 = Vec3::from(1f64, 2f64, 3f64);
+        assert_eq!(1f64, *vec1.x());
+        assert_eq!(2f64, *vec1.y());
+        assert_eq!(3f64, *vec1.z());
+
+        assert_eq!(1f64, vec1[0]);
+        assert_eq!(2f64, vec1[1]);
+        assert_eq!(3f64, vec1[2]);
+
+        let vec2 = -vec1;
+
+        assert_eq!(-1f64, *vec2.x());
+        assert_eq!(-2f64, *vec2.y());
+        assert_eq!(-3f64, *vec2.z());
+
+        let mut vec3 = Vec3::from(5f64, 3f64, 1f64);
+        vec3 += vec2;
+
+        assert_eq!(4f64, *vec3.x());
+        assert_eq!(1f64, *vec3.y());
+        assert_eq!(-2f64, *vec3.z());
+
+        vec3 *= 2f64;
+        assert_eq!(8f64, *vec3.x());
+        assert_eq!(2f64, *vec3.y());
+        assert_eq!(-4f64, *vec3.z());
+
+        assert_eq!(9f64, Vec3::from(1f64, 2f64, 2f64).length_squared());
+        assert_eq!(3f64, Vec3::from(1f64, 2f64, 2f64).length());
+
+        vec3 /= 2f64;
+        assert_eq!(4f64, *vec3.x());
+        assert_eq!(1f64, *vec3.y());
+        assert_eq!(-2f64, *vec3.z());
+    }
+}
+
+<span class="boring">}</span></code></pre></pre>
+<p>We use <code>f64</code> here, but some ray tracer use <code>f32</code>, that is float. Either is fine.</p>
+<h2 id="vec3-utility-functions"><a class="header" href="#vec3-utility-functions"><code>Vec3</code> utility Functions</a></h2>
+<p>The second part of the file contains vector utility functions.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl PartialEq for Vec3 {
+    fn eq(&amp;self, other: &amp;Self) -&gt; bool {
+        self.x() == other.x() &amp;&amp; self.y() == other.y() &amp;&amp; self.z() == other.z()
+    }
+}
+
+impl Display for Vec3 {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        f.write_str(format!(&quot;{} {} {}&quot;, self[0], self[1], self[2]).as_str())
+    }
+}
+
+impl Add for Vec3 {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -&gt; Self::Output {
+        Self {
+            e: (self.x() + rhs.x(), self.y() + rhs.y(), self.z() + rhs.z()),
+        }
+    }
+}
+
+impl Sub for Vec3 {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -&gt; Self::Output {
+        Self {
+            e: (self.x() - rhs.x(), self.y() - rhs.y(), self.z() - rhs.z()),
+        }
+    }
+}
+
+impl Mul for Vec3 {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -&gt; Self::Output {
+        Self {
+            e: (self.x() * rhs.x(), self.y() * rhs.y(), self.z() * rhs.z()),
+        }
+    }
+}
+
+impl Mul&lt;f64&gt; for Vec3 {
+    type Output = Self;
+
+    fn mul(self, rhs: f64) -&gt; Self::Output {
+        Self {
+            e: (self.x() * rhs, self.y() * rhs, self.z() * rhs),
+        }
+    }
+}
+
+impl Mul&lt;Vec3&gt; for f64 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -&gt; Self::Output {
+        rhs * self
+    }
+}
+
+impl Div&lt;f64&gt; for Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: f64) -&gt; Self::Output {
+        (1f64 / rhs) * self
+    }
+}
+
+impl Vec3 {
+    pub fn dot(lhs: &amp;Vec3, rhs: &amp;Vec3) -&gt; f64 {
+        lhs.x() * rhs.x() + lhs.y() * rhs.y() + lhs.z() * rhs.z()
+    }
+
+    pub fn cross(lhs: &amp;Vec3, rhs: &amp;Vec3) -&gt; Vec3 {
+        Self {
+            e: (
+                lhs.y() * rhs.z() - lhs.z() * rhs.y(),
+                lhs.z() * rhs.x() - lhs.x() * rhs.z(),
+                lhs.x() * rhs.y() - lhs.y() * rhs.x(),
+            ),
+        }
+    }
+
+    pub fn unit_vector(&amp;self) -&gt; Self {
+        *self / self.length()
+    }
+}
+
+<span class="boring">}</span></code></pre></pre>
+<p>And it's test:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>    #[test]
+    fn utility_funtions() {
+        let vec1 = Vec3::from(1f64, 2f64, 3f64);
+
+        assert_eq!(String::from(&quot;1 2 3&quot;), vec1.to_string());
+
+        let vec2 = Vec3::from(2f64, 3f64, 4f64);
+        let vec3 = vec1 + vec2;
+        assert_eq!(3f64, *vec3.x());
+        assert_eq!(5f64, *vec3.y());
+        assert_eq!(7f64, *vec3.z());
+
+        let vec4 = vec3 - vec2;
+        assert_eq!(vec4.x(), vec1.x());
+        assert_eq!(vec4.y(), vec1.y());
+        assert_eq!(vec4.z(), vec1.z());
+
+        let vec5 = vec4 * vec2;
+        assert_eq!(2f64, *vec5.x());
+        assert_eq!(6f64, *vec5.y());
+        assert_eq!(12f64, *vec5.z());
+
+        let vec6 = vec4 * 2f64;
+        assert_eq!(2f64, *vec6.x());
+        assert_eq!(4f64, *vec6.y());
+        assert_eq!(6f64, *vec6.z());
+
+        let vec6 = 2f64 * vec4;
+        assert_eq!(2f64, *vec6.x());
+        assert_eq!(4f64, *vec6.y());
+        assert_eq!(6f64, *vec6.z());
+
+        let vec7 = vec6 / 2f64;
+        assert_eq!(1f64, *vec7.x());
+        assert_eq!(2f64, *vec7.y());
+        assert_eq!(3f64, *vec7.z());
+
+        assert_eq!(14f64, Vec3::dot(&amp;vec7, &amp;vec1));
+        assert_eq!(Vec3::from(1f64, -2f64, 1f64), Vec3::cross(&amp;vec3, &amp;vec1));
+        assert_eq!(
+            Vec3::from(1f64 / 3f64, 2f64 / 3f64, 2f64 / 3f64),
+            Vec3::from(1f64, 2f64, 2f64).unit_vector()
+        )
+    }
+<span class="boring">}</span></code></pre></pre>
+<h2 id="color-utility-functions"><a class="header" href="#color-utility-functions">Color Utility Functions</a></h2>
+<p>Using our <code>Vec3</code> struct, we'll create a utility function to write a
+single pixel's color out to the standard output stream.</p>
+<p>Write the following code to a new file called color.rs, add <code>mod color;</code> to
+the top of main again.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::vec3::*;
+
+pub fn write_color&lt;T: std::io::Write&gt;(mut fmt: T, pixel_color: Color) -&gt; std::io::Result&lt;()&gt; {
+    fmt.write_fmt(format_args!(
+        &quot;{} {} {}\n&quot;,
+        (255.999 * pixel_color.x()) as i32,
+        (255.999 * pixel_color.y()) as i32,
+        (255.999 * pixel_color.z()) as i32
+    ))
+}
+
+
+<span class="boring">}</span></code></pre></pre>
+<p>Now we can change our main to use this:</p>
+<pre><pre class="playground"><code class="language-rust">use crate::color::*;
+use crate::vec3::*;
+
+mod color;
+mod vec3;
+
+fn main() {
+    const IMAGE_WIDTH: i32 = 256;
+    const IMAGE_HEIGHT: i32 = 256;
+
+    println!(&quot;P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255&quot;);
+
+    for j in (0..IMAGE_HEIGHT).rev() {
+        eprintln!(&quot;\rScanlines remaining: {j}&quot;);
+        for i in 0..IMAGE_WIDTH {
+            let pixel_color: Color = Color::from(
+                (i as f64) / (IMAGE_WIDTH as f64 - 1f64),
+                (j as f64) / (IMAGE_HEIGHT as f64 - 1f64),
+                0.25,
+            );
+
+            write_color(std::io::stdout(), pixel_color).unwrap();
+        }
+    }
+    eprintln!(&quot;\nDone&quot;);
+}
+</code></pre></pre>
+<p>This should be able to generate the same output as the previous Chapter.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="rays-a-simple-camera-and-background"><a class="header" href="#rays-a-simple-camera-and-background">Rays, a Simple Camera, and Background</a></h1>
+<h2 id="the-ray-struct"><a class="header" href="#the-ray-struct">The ray Struct</a></h2>
+<p>The one thing that all ray tracers have is a ray struct and a computation of what color is seen along a ray.
+Let’s think of a ray as a function $$ \textbf{P}(\textit{t}) = A + \textit{t}b $$. Here \(\textbf{P}\) is a 3D position along a line
+in 3D. \(textbf{A}\) is the ray origin and $b$ is the ray direction. The ray parameter \(\textit{t}\) is a real number
+(f64 in the code). Plug in a different \(\textit{t}\) and \(\textbf{P}(\textit{t})\) moves the point along the ray.
+Add in negative \(\textit{t}\)values, and you can go anywhere on the 3D line. For positive \(\textit{t}\),
+you get only the parts in front of \(\textbf{A}\), and this is what is often called a half-line or ray.</p>
+<p><img src="chapters/../resources/pictures/fig-1.02-lerp.jpg" alt="Linear interpolation" /></p>
+<p>The function \(\textbf{P}(\textit{t})\) in more verbose code form I call <code>ray::at(t)</code></p>
+<p>Create a new ray struct, no need to mention to add ray mod in <code>main.rs</code>, right?</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::vec3::*;
+pub struct Ray {
+    orig: Point3,
+    dir: Vec3,
+}
+
+impl Ray {
+    pub fn from(origin: Point3, direction: Vec3) -&gt; Ray {
+        Ray {
+            orig: origin,
+            dir: direction,
+        }
+    }
+
+    pub fn origin(&amp;self) -&gt; Point3 {
+        self.orig
+    }
+
+    pub fn direction(&amp;self) -&gt; Vec3 {
+        self.dir
+    }
+
+    pub fn at(&amp;self, t: f64) -&gt; Point3 {
+        self.orig + t * self.dir
+    }
+}
+
+<span class="boring">}</span></code></pre></pre>
+<h2 id="sending-rays-into-the-scene"><a class="header" href="#sending-rays-into-the-scene">Sending Rays Into the Scene</a></h2>
+<p>Now we are ready to turn the corner and make a ray tracer. At the core, the ray tracer sends rays
+through pixels and computes the color seen in the direction of those rays. The involved steps are:</p>
+<ul>
+<li>calculate the ray from the eye to the pixel</li>
+<li>determine which objects the ray intersects</li>
+<li>compute a color for that intersection point</li>
+</ul>
+<p>When first developing a ray tracer, I always do a simple camera for getting the code up and running.
+I also make a simple <code>ray_color(ray)</code> function that returns the color of the background (a simple gradient).</p>
+<p>I’ve often gotten into trouble using square images for debugging because I transpose \(\textit{x}\) and \(\textit{y}\) too often,
+so I’ll use a non-square image. For now we'll use a 16:9 aspect ratio, since that's so common.</p>
+<p>In addition to setting up the pixel dimensions for the rendered image, we also need to set up a virtual
+viewport through which to pass our scene rays. For the standard square pixel spacing, the viewport's aspect
+ratio should be the same as our rendered image. We'll just pick a viewport two units in height. We'll also
+set the distance between the projection plane and the projection point to be one unit. This is referred to
+as the “focal length”, not to be confused with “focus distance”, which we'll present later.</p>
+<p>I’ll put the “eye” (or camera center if you think of a camera) at \((0,0,0)\). I will have the y-axis go up, and
+the x-axis to the right. In order to respect the convention of a right handed coordinate system, into the screen
+is the negative z-axis. I will traverse the screen from the upper left hand corner, and use two offset vectors
+along the screen sides to move the ray endpoint across the screen. Note that I do not make the ray direction a
+unit length vector because I think not doing that makes for simpler and slightly faster code.</p>
+<p><img src="chapters/../resources/pictures/fig-1.03-cam-geom.jpg" alt="Camera geometry" /></p>
+<p>Below in code, the ray <code>r</code> goes to approximately the pixel centers(I won't worry about exactness for now because we'll add anti-aliasing later):</p>
+<pre><pre class="playground"><code class="language-rust">use crate::color::*;
+use crate::ray::*;
+use crate::vec3::*;
+
+mod color;
+mod ray;
+mod vec3;
+
+fn main() {
+    // Image
+    const ASPECT_RATIO: f64 = 16f64 / 9f64;
+    const IMAGE_WIDTH: i32 = 400;
+    const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
+
+    // Camera
+
+    let viewport_height = 2f64;
+    let viewport_width = ASPECT_RATIO * viewport_height;
+    let focal_length = 1f64;
+
+    let origin = Point3::from(0f64, 0f64, 0f64);
+    let horizontal = Vec3::from(viewport_width, 0f64, 0f64);
+    let vertical = Vec3::from(0f64, viewport_height, 0f64);
+    let lower_left_corner =
+        origin - horizontal / 2f64 - vertical / 2f64 - Vec3::from(0f64, 0f64, focal_length);
+
+    // Render
+
+    println!(&quot;P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255&quot;);
+
+    for j in (0..IMAGE_HEIGHT).rev() {
+        eprintln!(&quot;\rScanlines remaining: {j}&quot;);
+        for i in 0..IMAGE_WIDTH {
+            let u = (i as f64) / (IMAGE_WIDTH as f64 - 1f64);
+            let v = (j as f64) / (IMAGE_HEIGHT as f64 - 1f64);
+
+            let r: Ray = Ray::from(
+                origin,
+                lower_left_corner + u * horizontal + v * vertical - origin,
+            );
+            let pixel_color = ray_color(&amp;r);
+
+            write_color(std::io::stdout(), pixel_color).unwrap();
+        }
+    }
+    eprintln!(&quot;\nDone&quot;);
+}
+
+fn ray_color(r: &amp;Ray) -&gt; Color {
+    let unit_direction: Vec3 = r.direction().unit_vector();
+    let t = 0.5 * (unit_direction.y() + 1f64);
+    (1f64 - t) * Color::from(1f64, 1f64, 1f64) + t * Color::from(0.5, 0.7, 1f64)
+}
+</code></pre></pre>
+<p>The <code>ray_color(ray)</code> function linearly blends white and blue depending on the height of the \(\textit{y}\)
+coordinate after scaling the ray direction to unit length (so \(-1.0 &lt; \textit{y} &lt; 1.0\)). Because
+we're looking at the \(\textit{y}\) height after normalizing the vector, you'll notice a horizontal
+gradient to the color in addition to the vertical gradient.</p>
+<p>I then did a standard graphics trick of scaling that to \(0.0 &lt;= \textit{t} &lt;= 1.0\). When \(t = 1.0\)
+I want blue. When \(t = 0.0\) I want white. In between, I wanta blend. This forms a &quot;linear blend&quot;, or
+&quot;linear interpolation&quot;, or &quot;lerp&quot; for short, between two things. A lerp is always of the form:</p>
+<p>$$ blendedValue = (1-\textit{t}) * startValue + \textit{t} * endValue $$</p>
+<p>with \(\textit{t}\) going from zero to one. In our case this produce:</p>
+<p><img src="chapters/../resources/pictures/img-1.02-blue-to-white.png" alt="Blue to white gradient" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="adding-a-sphere"><a class="header" href="#adding-a-sphere">Adding a Sphere</a></h1>
+<p>Let’s add a single object to our ray tracer. People often use spheres in ray tracers because calculating whether a ray hits a sphere is pretty straightforward.</p>
+<h2 id="ray-sphere-intersection"><a class="header" href="#ray-sphere-intersection">Ray-Sphere Intersection</a></h2>
+<p>Recall that the equation for a sphere centered at the origin of radius \(\textbf{R}\) is
+$$ \textit{x}^2 + \textit{y}^2 + \textit{z}^2 = \textbf{R}^2 $$
+Put another way, if a given point \((\textit{x},\textit{y},\textit{z})\) is \(\textit{inside}\) the sphere, then
+$$ \textit{x}^2 + \textit{y}^2 + \textit{z}^2 &lt; \textbf{R}^2 $$
+, and if a given point \(\textit{x}, \textit{y}, \textit{z}\) is outside the sphere, then
+$$ \textit{x}^2 + \textit{y}^2 + \textit{z}^2 &gt; \textbf{R}^2 $$</p>
+<p>It gets uglier if the sphere center is at \((C_x,C_y, C_z )\):
+$$ (x-C_x)^2 + (y-C_y)^2 + (z-C_z)^2 = r^2 $$</p>
+<p>In graphics, you almost want your formulas to be in terms of vectors so all the \(x/y/z\) stuff is under the hood in the <strong>vec3</strong> class. You might note that the vector from center \(\textbf{C} = (C_x, C_y, C_z)\) to point \(\textbf{P} = (x,y,z)\) is \((\textbf{P}-\textbf{C})\), and therefore</p>
+<p>$$ (\textbf{P}-\textbf{C}) \cdot (\textbf{P}-\textbf{C}) = (x-C_x)^2 + (y-C_y)^2 + (z-C_z)^2 $$</p>
+<p>So the equation of the sphere in vector form is:
+$$ (\textbf{P} - \textbf{C}) \cdot (\textbf{P} - \textbf{C}) = r^2 $$</p>
+<p>We can read this as &quot;any point \(\textbf{P}\) that satisfies this equation is on the sphere&quot;. We want to know if our ray \(\textbf{P}(t)=\textbf{A}+t\textbf{b}\) ever hits the sphere anywere. If it does hit the sphere, there is some \(t\) for which \(\textbf{P}(t)\) satisfies the sphere equation. So we are looking for any \(t\) where this is true:
+$$ (\textbf{P}(t)-\textbf{C})\cdot(\textbf{P}(t)-\textbf{C}) = r^2 $$</p>
+<p>or expanding the full form of the ray \(\textbf{P}(t)\):
+$$ (\textbf{A}+t\textbf{b}-\textbf{C})\cdot(\textbf{A}+t\textbf{b}-\textbf{C})=r^2 $$</p>
+<p>The rules of vector algebra are all that we would want here. If we expand that equation and move all the terms to the left hand side we get:
+$$ t^2\textbf{b}\cdot\textbf{b} + 2t\textbf{b}\cdot(\textbf{A}-\textbf{C})+(\textbf{A}-\textbf{C})\cdot(\textbf{A}-\textbf{C})-r^2=0 $$</p>
+<p>The vectors and \(r\) in that equation are all constant and known. The unknown is \(t\), and the equation is a quadratic, like you probably saw in your high school math class. You can solve for \(t\) and there is a square root part that is either positive (meaning two real solutions), negative (meaning no real solutions), or zero (meaning one real solution). In graphics, the algebra almost always relates very directly to the geometry. What we have is:</p>
+<p><img src="chapters/../resources/pictures/fig-1.04-ray-sphere.jpg" alt="Ray-sphere intersection results" /></p>
+<h2 id="creating-our-first-raytraced-image"><a class="header" href="#creating-our-first-raytraced-image">Creating Our First Raytraced Image</a></h2>
+<p>If we take that math and hard-code it into our program, we can test it by coloring red any pixel that hits a small sphere we place at −1 on the z-axis:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn hit_sphere(center: &amp;Point3, radius: f64, r: &amp;Ray) -&gt; bool {
+    let oc: Vec3 = r.origin() - *center;
+    let a = Vec3::dot(&amp;r.direction(), &amp;r.direction());
+    let b = 2.0 * Vec3::dot(&amp;oc, &amp;r.direction());
+    let c = Vec3::dot(&amp;oc, &amp;oc) - radius * radius;
+    (b * b - 4.0 * a * c) &gt; 0f64
+}
+
+fn ray_color(r: &amp;Ray) -&gt; Color {
+    if hit_sphere(&amp;Point3::from(0f64, 0f64, -1f64), 0.5, r) {
+        return Color::from(1f64, 0f64, 0f64);
+    }
+    let unit_direction: Vec3 = r.direction().unit_vector();
+    let t = 0.5 * (unit_direction.y() + 1f64);
+    (1f64 - t) * Color::from(1f64, 1f64, 1f64) + t * Color::from(0.5, 0.7, 1f64)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>What we get is this:</p>
+<p><img src="chapters/../resources/pictures/img-1.03-red-sphere.png" alt="A simple red sphere" /></p>
+<p>Now this lacks all sorts of things — like shading and reflection rays and more than one object — but we are closer to halfway done than we are to our start! One thing to be aware of is that we tested whether the ray hits the sphere at all, but \(t&lt;0\) solutions work fine. If you change your sphere center to \(z=+1\) you will get exactly the same picture because you see the things behind you. This is not a feature! We’ll fix those issues next.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="surface-normals-and-multiple-objects"><a class="header" href="#surface-normals-and-multiple-objects">Surface Normals and Multiple Objects</a></h1>
+<h2 id="shading-with-surface-normals"><a class="header" href="#shading-with-surface-normals">Shading with Surface Normals</a></h2>
+<p>First, let’s get ourselves a surface normal so we can shade. This is a vector that is perpendicular to the surface at the point of intersection. There are two design decisions to make for normals. The first is whether these normals are unit length. That is convenient for shading so I will say yes, but I won’t enforce that in the code. This could allow subtle bugs, so be aware this is personal preference as are most design decisions like that. For a sphere, the outward normal is in the direction of the hit point minus the center:</p>
+<p><img src="chapters/../resources/pictures/fig-1.05-sphere-normal.jpg" alt="Sphere surface-normal geometry" /></p>
+<p>On the earth, this implies that the vecor form the earth's center to you points straight up. Let's throw that into the code now, and shade it. We don't have any lights or anything yet, so let's just visualize the normals with a color map. A common trick used for visual normals (because it's easy and somewhat intuitive to assume \(\textbf{n}\) is a unit length vector -- so each component is between -1 and 1) is to map each component to the interval from 0 to 1, and then map x/y/z to r/g/b. For the normal, we need the hit point, not just whether we hit or not. We only have one sphere in the scene, and it's directly in front of the camera, so we won't worry about negative values of \(t\) yet. We'll just assume the closest hit point (smallest \(t\)). These changes in the code let us compute and visualize \(\textbf{n}\):</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>fn hit_sphere(center: &amp;Point3, radius: f64, r: &amp;Ray) -&gt; f64 {
+    let oc: Vec3 = r.origin() - *center;
+    let a = Vec3::dot(&amp;r.direction(), &amp;r.direction());
+    let b = 2.0 * Vec3::dot(&amp;oc, &amp;r.direction());
+    let c = Vec3::dot(&amp;oc, &amp;oc) - radius * radius;
+    let discriminant = b * b - 4.0 * a * c;
+    if discriminant &lt; 0.0 {
+        -1.0
+    } else {
+        (-b - discriminant.sqrt()) / (2.0 * a)
+    }
+}
+
+fn ray_color(r: &amp;Ray) -&gt; Color {
+    let t = hit_sphere(&amp;Point3::from(0f64, 0f64, -1f64), 0.5, r);
+    if t &gt; 0.0 {
+        let n = Vec3::unit_vector(&amp;(r.at(t) - Vec3::from(0.0, 0.0, -1.0)));
+        return 0.5 * Color::from(n.x() + 1.0, n.y() + 1.0, n.z() + 1.0);
+    }
+    let unit_direction: Vec3 = r.direction().unit_vector();
+    let t = 0.5 * (unit_direction.y() + 1f64);
+    (1f64 - t) * Color::from(1f64, 1f64, 1f64) + t * Color::from(0.5, 0.7, 1f64)
+}
+<span class="boring">}</span></code></pre></pre>
+<p>And that yields this picture:</p>
+<p><img src="chapters/../resources/pictures/img-1.04-normals-sphere.png" alt="A sphere colored according to its normal vectors" /></p>
+<h2 id="simplifying-the-ray-sphere-intersection-code"><a class="header" href="#simplifying-the-ray-sphere-intersection-code">Simplifying the Ray-Sphere Intersection Code</a></h2>
+<p>Let's revisit the ray-sphere equation:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn hit_sphere(center: &amp;Point3, radius: f64, r: &amp;Ray) -&gt; f64 {
+    let oc: Vec3 = r.origin() - *center;
+    let a = Vec3::dot(&amp;r.direction(), &amp;r.direction());
+    let b = 2.0 * Vec3::dot(&amp;oc, &amp;r.direction());
+    let c = Vec3::dot(&amp;oc, &amp;oc) - radius * radius;
+    let discriminant = b * b - 4.0 * a * c;
+    if discriminant &lt; 0.0 {
+        -1.0
+    } else {
+        (-b - discriminant.sqrt()) / (2.0 * a)
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>First recall that a vector dotted with itself is equal to the squared length of that vector.</p>
+<p>Second, notice how the equation for <strong>b</strong> has a factor of two in it. Consider what happens to the quardratic equation if \(b=2h\):</p>
+<p>$$
+\frac{-b\pm\sqrt{b^2-4ac}}{2a} \\
+= \frac{-2h\pm\sqrt{(2h)^2-4ac}}{2a} \\
+= \frac{-2h\pm2\sqrt{h^2-ac}}{2a} \\
+= \frac{-h\pm\sqrt{h^2-ac}}{a}
+$$</p>
+<p>Using these observations, we can now simplify the sphere-intersection code to this:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn hit_sphere(center: &amp;Point3, radius: f64, r: &amp;Ray) -&gt; f64 {
+    let oc: Vec3 = r.origin() - *center;
+    let a = r.direction().length_squared();
+    let half_b = Vec3::dot(&amp;oc, &amp;r.direction());
+    let c = oc.length_squared() - radius * radius;
+    let discriminant = half_b * half_b - a * c;
+    if discriminant &lt; 0.0 {
+        -1.0
+    } else {
+        (-half_b - discriminant.sqrt()) / a
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="an-abstraction-for-hittable-objects"><a class="header" href="#an-abstraction-for-hittable-objects">An Abstraction for Hittable Objects</a></h2>
+<p>Now, how about several spheres? While it is tempting to have an array of spheres, a very clean solution is the make an “abstract class” for anything a ray might hit, and make both a sphere and a list of spheres just something you can hit. What that class should be called is something of a quandary —- calling it an “object” would be good if not for “object oriented” programming. “Surface” is often used, with the weakness being maybe we will want volumes. “hittable” emphasizes the member function that unites them. I don’t love any of these, but I will go with “hittable”.</p>
+<p>This <strong>hittable</strong> abstract class will have a hit function that takes in a ray. Most ray tracers have found it convenient to add a valid interval for hits \(t_{min}\) to \(t_{max}\), so the hit only “counts” if \(t_{min}&lt;t&lt;t_{max}\). For the initial rays this is positive \(t\), but as we will see, it can help some details in the code to have an interval \(t_{min}\) to \(t_{max}\). One design question is whether to do things like compute the normal if we hit something. We might end up hitting something closer as we do our search, and we will only need the normal of the closest thing. I will go with the simple solution and compute a bundle of stuff I will store in some structure. Here’s the abstract class:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::ray::*;
+use crate::vec3::*;
+
+pub struct HitRecord {
+    p: Point3,
+    normal: Vec3,
+    t: f64,
+}
+
+impl HitRecord {
+    pub fn new() -&gt; Self {
+        HitRecord {
+            p: Point3::new(),
+            normal: Vec3::new(),
+            t: Default::default(),
+        }
+    }
+
+    pub fn from(point: Point3, n: Vec3, hit_t: f64) -&gt; Self {
+        HitRecord {
+            p: point,
+            normal: n,
+            t: hit_t,
+        }
+    }
+
+    pub fn t(&amp;self) -&gt; f64 {
+        self.t
+    }
+
+    pub fn normal(&amp;self) -&gt; Vec3 {
+        self.normal
+    }
+
+    pub fn p(&amp;self) -&gt; Vec3 {
+        self.p
+    }
+}
+
+pub trait Hittable {
+    fn hit(&amp;self, r: &amp;Ray, t_min: f64, t_max: f64) -&gt; Option&lt;HitRecord&gt;;
+}
+
+<span class="boring">}</span></code></pre></pre>
+<p>And here's the sphere:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::hittable::*;
+use crate::vec3::*;
+
+pub struct Sphere {
+    center: Point3,
+    radius: f64,
+}
+
+impl Sphere {
+    pub fn new() -&gt; Self {
+        Sphere {
+            center: Point3::new(),
+            radius: Default::default(),
+        }
+    }
+
+    pub fn from(cen: Point3, r: f64) -&gt; Self {
+        Sphere {
+            center: cen,
+            radius: r,
+        }
+    }
+}
+
+<span class="boring">}</span></code></pre></pre>
+<h2 id="front-faces-versus-back-faces"><a class="header" href="#front-faces-versus-back-faces">Front Faces Versus Back faces</a></h2>
+<p>The second design decision for normals is whether they should always point out. At present, the normal found will always be in the direction of the center to the intersection point (the normal points out). If the ray intersects the sphere from the outside, the normal points against the ray. If the ray intersects the sphere from the inside, the normal (which always points out) points with the ray. Alternatively, we can have the normal always point against the ray. If the ray is outside the sphere, the normal will point outward, but if the ray is inside the sphere, the normal will point inward.</p>
+<p><img src="chapters/../resources/pictures/fig-1.06-normal-sides.jpg" alt="Possible directions for sphere surface-normal geometry" /></p>
+<p>We need to choose one of these possibilities because we will eventually want to determine which side of the surface that the ray is coming from. This is important for objects that are rendered differently on each side, like the text on a two-sided sheet of paper, or for objects that have an inside and an outside, like glass balls.</p>
+<p>If we decide to have the normals always point out, then we will need to determine which side the ray is on when we color it. We can figure this out by comparing the ray with the normal. If the ray and the normal face in the same direction, the ray is inside the object, if the ray and the normal face in the opposite direction, then the ray is outside the object. This can be determined by taking the dot product of the two vectors, where if their dot is positive, the ray is inside the sphere.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if Vec3::dot(ray_direction, outward_normal) &gt; 0.0 {
+    // ray is inside the sphere
+    todo!()
+} else {
+    // ray is outside the sphere
+    todo!()
+}
+
+<span class="boring">}</span></code></pre></pre>
+<p>If we decide to have the normals always point against the ray, we won't be able to use the dot product to determine which side of the surface the ray is on. Instead, we would need to store that information:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut front_face = false;
+if Vec3::dot(ray_direction, outward_normal) &gt; 0.0 {
+    // ray is inside the sphere
+    normal = - outward_normal;
+    front_face = false;
+} else {
+    // ray is outside the sphere
+    normal = ouward_normal;
+    front_face = true;
+}
+<span class="boring">}</span></code></pre></pre>
+<p>We can set things up so that normals always point “outward” from the surface, or always point against the incident ray. This decision is determined by whether you want to determine the side of the surface at the time of geometry intersection or at the time of coloring. In this book we have more material types than we have geometry types, so we'll go for less work and put the determination at geometry time. This is simply a matter of preference, and you'll see both implementations in the literature.</p>
+<p>We add the <code>front_face</code> bool to the <code>HitRecord</code> struct.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct HitRecord {
+    p: Point3,
+    normal: Vec3,
+    t: f64,
+    front_face: bool,
+}
+
+impl HitRecord {
+    pub fn new() -&gt; Self {
+        HitRecord {
+            p: Point3::new(),
+            normal: Vec3::new(),
+            t: Default::default(),
+            front_face: Default::default(),
+        }
+    }
+
+    pub fn from(point: Point3, n: Vec3, hit_t: f64, front: bool) -&gt; Self {
+        HitRecord {
+            p: point,
+            normal: n,
+            t: hit_t,
+            front_face: front,
+        }
+    }
+}
+
+<span class="boring">}</span></code></pre></pre>
+<p>We'll also add a function to solve this calculation for us.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[inline]
+    pub fn set_face_normal(&amp;mut self, r: &amp;Ray, outward_normal: &amp;Vec3) {
+        self.front_face = Vec3::dot(&amp;r.direction(), outward_normal) &lt; 0.0;
+        self.normal = if self.front_face {
+            *outward_normal
+        } else {
+            -*outward_normal
+        };
+    }
+<span class="boring">}</span></code></pre></pre>
+<p>And then we add the surface side determination to the class:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>impl Hittable for Sphere {
+    fn hit(&amp;self, r: &amp;crate::ray::Ray, t_min: f64, t_max: f64) -&gt; Option&lt;HitRecord&gt; {
+        let oc: Vec3 = r.origin() - self.center;
+        let a = r.direction().length_squared();
+        let half_b = Vec3::dot(&amp;oc, &amp;r.direction());
+        let c = oc.length_squared() - self.radius * self.radius;
+
+        let discriminant = half_b * half_b - a * c;
+        if discriminant &lt; 0.0 {
+            return None;
+        }
+
+        let sqrtd = discriminant.sqrt();
+
+        // Find the nearest root that lies in the acceptable range.
+        let mut root = (-half_b - sqrtd) / a;
+        if root &lt; t_min || t_max &lt; root {
+            root = (-half_b + sqrtd) / a;
+            if root &lt; t_min || t_max &lt; root {
+                return None;
+            }
+        }
+
+        let p = r.at(root);
+        let mut rec = HitRecord::from(p, (p - self.center) / self.radius, root);
+        let outward_normal = (p - self.center) / self.radius;
+        rec.set_face_normal(r, &amp;outward_normal);
+
+        Some(rec)
+    }
+}
+
+<span class="boring">}</span></code></pre></pre>
+<h2 id="a-list-of-hittable-objects"><a class="header" href="#a-list-of-hittable-objects">A List of Hittable Objects</a></h2>
+<p>We have a generic object called a <code>Hittable</code> that the ray can intersect with. We now add a class that stores a lisxt of <code>Hittable</code>s :</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::rc::Rc;
+
+use crate::hittable::HitRecord;
+use crate::hittable::Hittable;
+use crate::ray::*;
+use crate::vec3::*;
+
+pub struct HittableList {
+    objects: Vec&lt;Rc&lt;dyn Hittable&gt;&gt;,
+}
+
+impl HittableList {
+    pub fn new() -&gt; Self {
+        HittableList {
+            objects: Default::default(),
+        }
+    }
+
+    pub fn from(object: Rc&lt;dyn Hittable&gt;) -&gt; Self {
+        HittableList {
+            objects: vec![object],
+        }
+    }
+
+    pub fn clear(&amp;mut self) {
+        self.objects.clear();
+    }
+
+    pub fn add(&amp;mut self, object: Rc&lt;dyn Hittable&gt;) {
+        self.objects.push(object);
+    }
+}
+
+impl Hittable for HittableList {
+    fn hit(&amp;self, r: &amp;Ray, t_min: f64, t_max: f64) -&gt; Option&lt;HitRecord&gt; {
+        let mut hit_anything = false;
+        let mut closest_so_far = t_max;
+        let mut res_rec = HitRecord::new();
+
+        for object in self.objects.iter() {
+            if let Some(temp_rec) = object.hit(r, t_min, closest_so_far) {
+                hit_anything = true;
+                closest_so_far = temp_rec.t();
+                res_rec = temp_rec;
+            }
+        }
+
+        if hit_anything {
+            Some(res_rec)
+        } else {
+            None
+        }
+    }
+}
+
+<span class="boring">}</span></code></pre></pre>
+<h2 id="some-rust-features"><a class="header" href="#some-rust-features">Some Rust features</a></h2>
+<h3 id="options"><a class="header" href="#options">Options</a></h3>
+<p>todo!()</p>
+<h3 id="rc"><a class="header" href="#rc">Rc&lt;&gt;</a></h3>
+<p>todo!()</p>
+<h2 id="common-constants-and-utility-functions"><a class="header" href="#common-constants-and-utility-functions">Common Constants and Utility Functions</a></h2>
+<p>Our general main header file:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub use std::f64::consts::PI;
+
+// Utility Functions
+#[inline]
+pub fn degrees_to_radians(degrees: f64) -&gt; f64 {
+    degrees * PI / 180.0
+}
+
+<span class="boring">}</span></code></pre></pre>
+<p>and the new main:</p>
+<pre><pre class="playground"><code class="language-rust">use std::rc::Rc;
+
+use hittable::HitRecord;
+use hittable::Hittable;
+
+use crate::color::*;
+use crate::hittable_list::*;
+use crate::ray::*;
+use crate::rtweekend::*;
+use crate::sphere::*;
+use crate::vec3::*;
+
+mod color;
+mod hittable;
+mod hittable_list;
+mod ray;
+mod rtweekend;
+mod sphere;
+mod vec3;
+
+fn main() {
+    // Image
+    const ASPECT_RATIO: f64 = 16f64 / 9f64;
+    const IMAGE_WIDTH: i32 = 400;
+    const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
+
+    // World
+    let mut world = HittableList::new();
+    world.add(Rc::new(Sphere::from(Point3::from(0f64, 0f64, -1f64), 0.5)));
+    world.add(Rc::new(Sphere::from(
+        Point3::from(0f64, -100.5f64, -1f64),
+        100f64,
+    )));
+
+    // Camera
+
+    let viewport_height = 2f64;
+    let viewport_width = ASPECT_RATIO * viewport_height;
+    let focal_length = 1f64;
+
+    let origin = Point3::from(0f64, 0f64, 0f64);
+    let horizontal = Vec3::from(viewport_width, 0f64, 0f64);
+    let vertical = Vec3::from(0f64, viewport_height, 0f64);
+    let lower_left_corner =
+        origin - horizontal / 2f64 - vertical / 2f64 - Vec3::from(0f64, 0f64, focal_length);
+
+    // Render
+
+    println!(&quot;P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255&quot;);
+
+    for j in (0..IMAGE_HEIGHT).rev() {
+        eprintln!(&quot;\rScanlines remaining: {j}&quot;);
+        for i in 0..IMAGE_WIDTH {
+            let u = (i as f64) / (IMAGE_WIDTH as f64 - 1f64);
+            let v = (j as f64) / (IMAGE_HEIGHT as f64 - 1f64);
+
+            let r: Ray = Ray::from(
+                origin,
+                lower_left_corner + u * horizontal + v * vertical - origin,
+            );
+            let pixel_color = ray_color(&amp;r, &amp;world);
+
+            write_color(std::io::stdout(), pixel_color).unwrap();
+        }
+    }
+    eprintln!(&quot;\nDone&quot;);
+}
+
+fn ray_color(r: &amp;Ray, world: &amp;dyn Hittable) -&gt; Color {
+    if let Some(rec) = world.hit(r, 0f64, Infinity) {
+        return 0.5 * (rec.normal() + Color::from(1f64, 1f64, 1f64));
+    }
+    let unit_direction: Vec3 = r.direction().unit_vector();
+    let t = 0.5 * (unit_direction.y() + 1f64);
+    (1f64 - t) * Color::from(1f64, 1f64, 1f64) + t * Color::from(0.5, 0.7, 1f64)
+}
+</code></pre></pre>
+<p>This yields a picture that is really just a visualization of where the spheres are along with their surface normal. This is often a great way to look at your model for flaws and characteristics.</p>
+<p><img src="chapters/../resources/pictures/img-1.05-normals-sphere-ground.png" alt="Resulting render of normals-colored sphere with ground" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="antialiasing"><a class="header" href="#antialiasing">Antialiasing</a></h1>
+<p>When a real camera takes a picture, there are usually no jaggies along edges because the edge pixels are a blend of some foreground and some background. We can get the same effect by averaging a bunch of samples inside each pixel. We will not bother with stratification. This is controversial, but is usual for my programs. For some ray tracers it is critical, but the kind of general one we are writing doesn’t benefit very much from it and it makes the code uglier. We abstract the camera class a bit so we can make a cooler camera later.</p>
+<h2 id="some-random-number-utilities"><a class="header" href="#some-random-number-utilities">Some Random Number Utilities</a></h2>
+<p>One thing we need is a random number generator that returns real random numbers. We need a function that returns a canonical random number which by convention returns a random real in the range \(0\leq r&lt;1\) . The “less than” before the 1 is important as we will sometimes take advantage of that.</p>
+<p>A simple approach to this is to use the <a href="https://docs.rs/rand/latest/rand/"><code>rand</code></a> crate. We need to modify the <code>Cargo.toml</code> first:</p>
+<pre><code class="language-toml">[dependencies]
+rand = &quot;0.8.5&quot;
+</code></pre>
+<p>For example, the <em>rand::random::<u8>()</em> function can generate a random <code>u8</code> in the range <code>u8::MIN</code> and <code>u8::MAX</code>. Hence we can get a real random number as desired with the following code snippet, added to <code>rtweekend.rs</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>#[inline]
+pub fn random_double() -&gt; f64 {
+    rand::random::&lt;u32&gt;() as f64 / (std::u32::MAX as f64)
+}
+
+#[inline]
+pub fn random_double_rng(min: f64, max: f64) -&gt; f64 {
+    min + (max - min) * rand::random::&lt;f64&gt;()
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="generating-pixels-with-multiple-samples"><a class="header" href="#generating-pixels-with-multiple-samples">Generating Pixels with Multiple Samples</a></h2>
+<p>For a given pixel we have several samples within that pixel and send rays through each of the samples. The colors of these rays are then averaged:</p>
+<p><img src="chapters/../resources/pictures/fig-1.07-pixel-samples.jpg" alt="Pixel samples" /></p>
+<p>Now's a good time to create a <code>camera</code> class to manage our virtual camera and the related tasks of scene scampling. The following implements a simple camera using the axis-aligned camera from before:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::{ray::Ray, vec3::*};
+
+pub struct Camera {
+    origin: Point3,
+    lower_left_corner: Point3,
+    horizonal: Vec3,
+    vertical: Vec3,
+}
+
+impl Camera {
+    pub fn new() -&gt; Self {
+        let aspect_ratio = 16.0 / 9.0;
+        let viewport_height = 2.0;
+        let viewport_width = aspect_ratio * viewport_height;
+        let focal_length = 1.0;
+
+        let origin_t = Point3::from(0f64, 0f64, 0f64);
+
+        let horizonal_t = Vec3::from(viewport_width, 0.0, 0.0);
+        let vertical_t = Vec3::from(0.0, viewport_height, 0.0);
+
+        Camera {
+            origin: origin_t,
+            lower_left_corner: origin_t
+                - horizonal_t / 2.0
+                - vertical_t / 2.0
+                - Vec3::from(0.0, 0.0, focal_length),
+            vertical: vertical_t,
+            horizonal: horizonal_t,
+        }
+    }
+
+    pub fn get_ray(&amp;self, u: f64, v: f64) -&gt; Ray {
+        Ray::from(
+            self.origin,
+            self.lower_left_corner + u * self.horizonal + v * self.vertical - self.origin,
+        )
+    }
+}
+
+<span class="boring">}</span></code></pre></pre>
+<p>To handle the multi-sampled color computation, we'll update the <code>write_color()</code> function. Rather than adding in a fractional contribution each time we acumulate more light to the color, just add the full color each iteration, and then perform a single divide at the end (by the number of samples) when writing out the color. In addition, we'll add a handy utility function to the <code>rtweekend.rs</code> utility header: <code>clamp(x,min,max)</code>, which clamps the value x to the <code>range [min,max]</code>:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[inline]
+pub fn clamp(x: f64, min: f64, max: f64) -&gt; f64 {
+    if x &lt; min {
+        min
+    } else if x &gt; max {
+        max
+    } else {
+        x
+    }
+}
+
+<span class="boring">}</span></code></pre></pre>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::{rtweekend::clamp, vec3::*};
+
+pub fn write_color&lt;T: std::io::Write&gt;(
+    mut fmt: T,
+    pixel_color: Color,
+    samples_per_pixel: i32,
+) -&gt; std::io::Result&lt;()&gt; {
+    let mut r = *pixel_color.x();
+    let mut g = *pixel_color.y();
+    let mut b = *pixel_color.z();
+
+    // Divide the color by the number of samples.
+
+    let scale = 1.0 / samples_per_pixel as f64;
+
+    r *= scale;
+    g *= scale;
+    b *= scale;
+
+    fmt.write_fmt(format_args!(
+        &quot;{} {} {}\n&quot;,
+        (256.0 * clamp(r, 0.0, 0.999)) as i32,
+        (256.0 * clamp(g, 0.0, 0.999)) as i32,
+        (256.0 * clamp(b, 0.0, 0.999)) as i32,
+    ))
+}
+
+<span class="boring">}</span></code></pre></pre>
+<p>main is also changed:</p>
+<pre><pre class="playground"><code class="language-rust">
+fn main() {
+    // Image
+    const ASPECT_RATIO: f64 = 16f64 / 9f64;
+    const IMAGE_WIDTH: i32 = 400;
+    const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
+    const SAMPLES_PER_PIXEL: i32 = 100;
+
+    // World
+    let mut world = HittableList::new();
+    world.add(Rc::new(Sphere::from(Point3::from(0f64, 0f64, -1f64), 0.5)));
+    world.add(Rc::new(Sphere::from(
+        Point3::from(0f64, -100.5f64, -1f64),
+        100f64,
+    )));
+
+    // Camera
+
+    let cam = Camera::new();
+
+    // Render
+
+    println!(&quot;P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255&quot;);
+
+    for j in (0..IMAGE_HEIGHT).rev() {
+        eprintln!(&quot;\rScanlines remaining: {j}&quot;);
+        for i in 0..IMAGE_WIDTH {
+            let mut pixel_color: Color = Color::from(0.0, 0.0, 0.0);
+            for s in 0..SAMPLES_PER_PIXEL {
+                let u = (i as f64 + random_double()) / (IMAGE_WIDTH - 1) as f64;
+                let v = (j as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64;
+                let r = cam.get_ray(u, v);
+
+                pixel_color += ray_color(&amp;r, &amp;world);
+            }
+            write_color(std::io::stdout(), pixel_color, SAMPLES_PER_PIXEL).unwrap();
+        }
+    }
+    eprintln!(&quot;\nDone&quot;);
+}</code></pre></pre>
+<p>Zooming into the image that is produced, we can see the difference in edge pixels.</p>
+<p><img src="chapters/../resources/pictures/img-1.06-antialias-before-after.png" alt="Before and after antialiasing" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="diffuse-materials"><a class="header" href="#diffuse-materials">Diffuse Materials</a></h1>
+<p>Now that we have objects and multiple rays per pixel, we can make some realistic looking materials. We’ll start with diffuse (matte) materials. One question is whether we mix and match geometry and materials (so we can assign a material to multiple spheres, or vice versa) or if geometry and material are tightly bound (that could be useful for procedural objects where the geometry and material are linked). We’ll go with separate — which is usual in most renderers — but do be aware of the limitation.</p>
+<h2 id="a-simple-diffuse-material"><a class="header" href="#a-simple-diffuse-material">A Simple Diffuse Material</a></h2>
+<p>Diffuse objects that don't emit light merely take on the color of their surroundings, but they modulate that with their own intrinsic color. Light that reflects off a diffuse surface has its direction randomized. So, if we send three rays into a crack between two diffuse surfaces they will each have different random behavior:</p>
+<p><img src="chapters/../resources/pictures/fig-1.08-light-bounce.jpg" alt="Light ray bounces" /></p>
+<p>They also might be absorbed rather than reflected. The darker the surface, the more likely absorption is. (That’s why it is dark!) Really any algorithm that randomizes direction will produce surfaces that look matte. One of the simplest ways to do this turns out to be exactly correct for ideal diffuse surfaces. (I used to do it as a lazy hack that approximates mathematically ideal Lambertian.)</p>
+<p>(Reader Vassillen Chizhov proved that the lazy hack is indeed just a lazy hack and is inaccurate. The correct representation of ideal Lambertian isn't much more work, and is presented at the end of the chapter.)</p>
+<p>There are two unit radius spheres tangent to the hit point \(p\) of a surface. These two spheres have a center of \((P+n)\) and \((P-n)\), where \(n\) is the normal of the surface. The sphere with a center at \((P-n)\) is considered inside the surface, whereas the sphere with center \((P+n)\) is considered outside the surface. Select the tangent unit radius sphere that is on the same side of the surface as the ray origin. Pick a random point \(S\) inside this unit radius sphere and send a ray from the hit point 𝐏 to the random point \(S\) (this is the vector \((S-P)\):</p>
+<p>We need a way to pick a random point in a unit radius sphere. We’ll use what is usually the easiest algorithm: a rejection method. First, pick a random point in the unit cube where x, y, and z all range from −1 to +1. Reject this point and try again if the point is outside the sphere.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Vec3{
+
+    #[inline]
+        pub fn random() -&gt; Self {
+            Vec3 {
+                e: (random_double(), random_double(), random_double()),
+            }
+        }
+
+        #[inline]
+        pub fn random_rng(min: f64, max: f64) -&gt; Self {
+            Vec3 {
+                e: (
+                    random_double_rng(min, max),
+                    random_double_rng(min, max),
+                    random_double_rng(min, max),
+                ),
+            }
+        }
+
+        pub fn random_in_unit_sphere() -&gt; Self {
+            loop {
+                let p = Vec3::random_rng(-1.0, 1.0);
+                if p.length_squared() &lt; 1f64 {
+                    return p;
+                }
+            }
+        }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Then update the <code>ray_color()</code> function to use the new radom direction generator:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>fn ray_color(r: &amp;Ray, world: &amp;dyn Hittable) -&gt; Color {
+    if let Some(rec) = world.hit(r, 0f64, Infinity) {
+        let target: Point3 = rec.p() + rec.normal() + Vec3::random_in_unit_sphere();
+        return 0.5 * ray_color(&amp;Ray::from(rec.p(), target - rec.p()), world);
+    }
+    let unit_direction: Vec3 = r.direction().unit_vector();
+    let t = 0.5 * (unit_direction.y() + 1f64);
+    (1f64 - t) * Color::from(1f64, 1f64, 1f64) + t * Color::from(0.5, 0.7, 1f64)
+}
+<span class="boring">}</span></code></pre></pre>
+<h2 id="limiting-the-number-of-child-rays"><a class="header" href="#limiting-the-number-of-child-rays">Limiting the Number of Child Rays</a></h2>
+<p>There's one potential problem lurking here. Notice that the <code>ray_color</code> function is recursive. When will it stop recursing? When it fails to hit anything. In some cases, however, that may be a long time — long enough to blow the stack. To guard against that, let's limit the maximum recursion depth, returning no light contribution at the maximum depth:</p>
+<pre><pre class="playground"><code class="language-rust">
+fn main() {
+    // Image
+<span class="boring">   const ASPECT_RATIO: f64 = 16f64 / 9f64;
+</span><span class="boring">   const IMAGE_WIDTH: i32 = 400;
+</span><span class="boring">   const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
+</span><span class="boring">   const SAMPLES_PER_PIXEL: i32 = 100;
+</span>    const MAX_DEPTH: i32 = 50;
+
+<span class="boring">   // World
+</span><span class="boring">   let mut world = HittableList::new();
+</span><span class="boring">   world.add(Rc::new(Sphere::from(Point3::from(0f64, 0f64, -1f64), 0.5)));
+</span><span class="boring">   world.add(Rc::new(Sphere::from(
+</span><span class="boring">       Point3::from(0f64, -100.5f64, -1f64),
+</span><span class="boring">       100f64,
+</span><span class="boring">   )));
+</span><span class="boring">
+</span><span class="boring">   // Camera
+</span><span class="boring">
+</span><span class="boring">   let cam = Camera::new();
+</span><span class="boring">
+</span><span class="boring">   // Render
+</span><span class="boring">
+</span><span class="boring">   println!(&quot;P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255&quot;);
+</span><span class="boring">
+</span>    for j in (0..IMAGE_HEIGHT).rev() {
+<span class="boring">       eprintln!(&quot;\rScanlines remaining: {j}&quot;);
+</span>        for i in 0..IMAGE_WIDTH {
+<span class="boring">           let mut pixel_color: Color = Color::from(0.0, 0.0, 0.0);
+</span>            for s in 0..SAMPLES_PER_PIXEL {
+<span class="boring">               let u = (i as f64 + random_double()) / (IMAGE_WIDTH - 1) as f64;
+</span><span class="boring">               let v = (j as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64;
+</span><span class="boring">               let r = cam.get_ray(u, v);
+</span><span class="boring">
+</span>                pixel_color += ray_color(&amp;r, &amp;world, MAX_DEPTH);
+            }
+<span class="boring">           write_color(std::io::stdout(), pixel_color, SAMPLES_PER_PIXEL).unwrap();
+</span>        }
+    }
+<span class="boring">   eprintln!(&quot;\nDone&quot;);
+</span>}
+
+fn ray_color(r: &amp;Ray, world: &amp;dyn Hittable, depth: i32) -&gt; Color {
+    if depth &lt;= 0 {
+        return Color::from(0.0, 0.0, 0.0);
+    }
+
+<span class="boring">   if let Some(rec) = world.hit(r, 0f64, Infinity) {
+</span><span class="boring">       let target: Point3 = rec.p() + rec.normal() + Vec3::random_in_unit_sphere();
+</span>        return 0.5 * ray_color(&amp;Ray::from(rec.p(), target - rec.p()), world, depth - 1);
+<span class="boring">           }
+</span><span class="boring">   let unit_direction: Vec3 = r.direction().unit_vector();
+</span><span class="boring">   let t = 0.5 * (unit_direction.y() + 1f64);
+</span><span class="boring">   (1f64 - t) * Color::from(1f64, 1f64, 1f64) + t * Color::from(0.5, 0.7, 1f64)
+</span>}</code></pre></pre>
+<p>This gives us:</p>
+<p><img src="chapters/../resources/pictures/img-1.07-first-diffuse.png" alt="First render of a difuse sphere" /></p>
+<p>Note: If you met up with some performance issue, try using the release mode: <code>cargo build --release</code></p>
+<h2 id="using-gamma-correction-for-accurate-color-intensity"><a class="header" href="#using-gamma-correction-for-accurate-color-intensity">Using Gamma Correction for Accurate Color Intensity</a></h2>
+<p>Note the shadowing under the sphere. This picture is very dark, but our spheres only absorb half the energy on each bounce, so they are 50% reflectors. If you can’t see the shadow, don’t worry, we will fix that now. These spheres should look pretty light (in real life, a light grey). The reason for this is that almost all image viewers assume that the image is “gamma corrected”, meaning the 0 to 1 values have some transform before being stored as a byte. There are many good reasons for that, but for our purposes we just need to be aware of it. To a first approximation, we can use “gamma 2” which means raising the color to the power 1/𝑔𝑎𝑚𝑚𝑎, or in our simple case ½, which is just square-root:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>pub fn write_color&lt;T: std::io::Write&gt;(
+    mut fmt: T,
+    pixel_color: Color,
+    samples_per_pixel: i32,
+) -&gt; std::io::Result&lt;()&gt; {
+
+// Divide the color by the number of samples and gamma-correct for gamma=2.0
+
+let scale = 1.0 / samples_per_pixel as f64;
+
+r = (scale * r).sqrt();
+g = (scale * g).sqrt();
+b = (scale * b).sqrt();
+}
+
+<span class="boring">}</span></code></pre></pre>
+<p>That yields light grey, as we desire:</p>
+<p><img src="chapters/../resources/pictures/img-1.08-gamma-correct.png" alt="Diffuse sphere, with gamma correction" /></p>
+<h2 id="fixing-shadow-acne"><a class="header" href="#fixing-shadow-acne">Fixing Shadow Acne</a></h2>
+<p>There’s also a subtle bug in there. Some of the reflected rays hit the object they are reflecting off of not at exactly \(t=0\), but instead at \(t=−0.0000001\) or \(t=0.00000001\) or whatever floating point approximation the sphere intersector gives us. So we need to ignore hits very near zero:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if let Some(rec) = world.hit(r, 0.0001f64, Infinity) {
+    let target: Point3 = rec.p() + rec.normal() + Vec3::random_in_unit_sphere();
+    return 0.5 * ray_color(&amp;Ray::from(rec.p(), target - rec.p()), world, depth - 1);
+}
+<span class="boring">}</span></code></pre></pre>
+<p>This gets rid of the shadow acne problem. Yes it is really called that.</p>
+<h2 id="true-lambertian-reflection"><a class="header" href="#true-lambertian-reflection">True Lambertian Reflection</a></h2>
+<p>The rejection method presented here produces random points in the unit ball offset along the surface normal. This corresponds to picking directions on the hemisphere with high probability close to the normal, and a lower probability of scattering rays at grazing angles. This distribution scales by the \(\cos^3(\phi)\) where \(\phi\) is the angle from the normal. This is useful since light arriving at shallow angles spreads over a larger area, and thus has a lower contribution to the final color.</p>
+<p>However, we are interested in a Lambertian distribution, which has a distribution of \(\cos(\phi)\). True Lambertian has the probability higher for ray scattering close to the normal, but the distribution is more uniform. This is achieved by picking random points on the surface of the unit sphere, offset along the surface normal. Picking random points on the unit sphere can be achieved by picking random points in the unit sphere, and then normalizing those.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Vec3 {
+    pub fn random_unit_vector() -&gt; Self {
+            Vec3::unit_vector(&amp;Vec3::random_in_unit_sphere())
+        }
+}
+
+<span class="boring">}</span></code></pre></pre>
+<p>This <code>random_unit_vector()</code> is a drop-in replacement for the existing <code>random_in_unit_sphere()</code> funciton.</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span>
+<span class="boring">fn main() {
+</span>fn ray_color(r: &amp;Ray, world: &amp;dyn Hittable, depth: i32) -&gt; Color {
+<span class="boring">   if depth &lt;= 0 {
+</span><span class="boring">       return Color::from(0.0, 0.0, 0.0);
+</span><span class="boring">   }
+</span><span class="boring">
+</span><span class="boring">   if let Some(rec) = world.hit(r, 0.0001f64, Infinity) {
+</span>        let target: Point3 = rec.p() + rec.normal() + Vec3::random_unit_vector();
+<span class="boring">       return 0.5 * ray_color(&amp;Ray::from(rec.p(), target - rec.p()), world, depth - 1);
+</span><span class="boring">   }
+</span><span class="boring">   let unit_direction: Vec3 = r.direction().unit_vector();
+</span><span class="boring">   let t = 0.5 * (unit_direction.y() + 1f64);
+</span><span class="boring">   (1f64 - t) * Color::from(1f64, 1f64, 1f64) + t * Color::from(0.5, 0.7, 1f64)
+</span>}
+<span class="boring">}</span></code></pre></pre>
+<p>After rendering we get a similar image:</p>
+<p><img src="chapters/../resources/pictures/img-1.09-correct-lambertian.png" alt="Correct render of Lambertian sphere" /></p>
+<p>It's hard to tell the difference between these two diffuse methods, given that our scene of two spheres is so simple, but you should be able to notice two important visual differences:</p>
+<ul>
+<li>The shadows are less pronounced after the change</li>
+<li>Both spheres are lighter in appearance after the change</li>
+</ul>
+<p>Both of these changes are due to the more uniform scattering of the light rays, fewer rays are scattering toward the normal. This means that for diffuse objects, they will appear lighter because more light bounces toward the camera. For the shadows, less light bounces straight-up, so the parts of the larger sphere directly underneath the smaller sphere are brighter.</p>
+<h2 id="an-alternative-diffuse-formulation"><a class="header" href="#an-alternative-diffuse-formulation">An Alternative Diffuse Formulation</a></h2>
+<p>The initial hack presented in this book lasted a long time before it was proven to be an incorrect approximation of ideal Lambertian diffuse. A big reason that the error persisted for so long is that it can be difficult to:</p>
+<ul>
+<li>Mathematically prove that the probability distribution is incorrect</li>
+<li>Intuitively explain why a \(\cos(\phi)\) distribution is desirable (and what it would look like)</li>
+</ul>
+<p>Not a lot of common, everyday objects are perfectly diffuse, so our visual intuition of how these objects behave under light can be poorly formed.</p>
+<p>In the interest of learning, we are including an intuitive and easy to understand diffuse method. For the two methods above we had a random vector, first of random length and then of unit length, offset from the hit point by the normal. It may not be immediately obvious why the vectors should be displaced by the normal.</p>
+<p>A more intuitive approach is to have a uniform scatter direction for all angles away from the hit point, with no dependence on the angle from the normal. Many of the first raytracing papers used this diffuse method (before adopting Lambertian diffuse).</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Vec3{
+
+    pub fn random_in_hemisphere(normal: &amp;Vec3) -&gt; Self {
+        let in_unit_sphere = Vec3::random_in_unit_sphere();
+        if Vec3::dot(&amp;in_unit_sphere, normal) &gt; 0.0 {
+            in_unit_sphere
+        } else {
+            -in_unit_sphere
+        }
+    }
+}
+<span class="boring">}</span></code></pre></pre>
+<p>Plugging the new formula into the <code>ray_color()</code> function:</p>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn ray_color(r: &amp;Ray, world: &amp;dyn Hittable, depth: i32) -&gt; Color {
+<span class="boring">   if depth &lt;= 0 {
+</span><span class="boring">       return Color::from(0.0, 0.0, 0.0);
+</span><span class="boring">   }
+</span><span class="boring">
+</span><span class="boring">   if let Some(rec) = world.hit(r, 0.0001f64, Infinity) {
+</span>        let target: Point3 = rec.p() + Vec3::random_in_hemisphere(&amp;rec.normal());
+<span class="boring">       return 0.5 * ray_color(&amp;Ray::from(rec.p(), target - rec.p()), world, depth - 1);
+</span><span class="boring">   }
+</span><span class="boring">   let unit_direction: Vec3 = r.direction().unit_vector();
+</span><span class="boring">   let t = 0.5 * (unit_direction.y() + 1f64);
+</span><span class="boring">   (1f64 - t) * Color::from(1f64, 1f64, 1f64) + t * Color::from(0.5, 0.7, 1f64)
+</span>}
+
+<span class="boring">}</span></code></pre></pre>
+<p>Gives us the following image:</p>
+<p><img src="chapters/../resources/pictures/img-1.10-rand-hemispherical.png" alt="Rendering of diffuse spheres with hemispherical scattering" /></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="./theme/sidebar.js"></script>
+
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            MathJax.Hub.Register.StartupHook('End', function() {
+                window.setTimeout(window.print, 100);
+            });
+        });
+        </script>
+
+    </body>
+</html>

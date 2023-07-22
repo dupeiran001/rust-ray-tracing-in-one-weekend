@@ -1,0 +1,280 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Output an Image - ray-tracing in one weekend</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href=".././theme/style.css">
+
+        <!-- MathJax -->
+        <script async type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../chapters/introduce.html">Introduce</a></li><li class="chapter-item expanded "><a href="../chapters/chapter_1.html" class="active"><strong aria-hidden="true">1.</strong> Output an Image</a></li><li class="chapter-item expanded "><a href="../chapters/chapter_2.html"><strong aria-hidden="true">2.</strong> The vec3 Struct</a></li><li class="chapter-item expanded "><a href="../chapters/chapter_3.html"><strong aria-hidden="true">3.</strong> Rays, a Simple Camera, and Background</a></li><li class="chapter-item expanded "><a href="../chapters/chapter_4.html"><strong aria-hidden="true">4.</strong> Adding a Sphere</a></li><li class="chapter-item expanded "><a href="../chapters/chapter_5.html"><strong aria-hidden="true">5.</strong> Surface Normals and Multiple Objects</a></li><li class="chapter-item expanded "><a href="../chapters/chapter_6.html"><strong aria-hidden="true">6.</strong> Antialiasing</a></li><li class="chapter-item expanded "><a href="../chapters/chapter_7.html"><strong aria-hidden="true">7.</strong> Diffuse Materials</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">ray-tracing in one weekend</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                        <a href="https://github.com/dupeiran001/rust-ray-tracing-in-one-weekend" title="Git repository" aria-label="Git repository">
+                            <i id="git-repository-button" class="fa fa-github"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <!-- Page table of contents -->
+                        <div class="sidetoc"><nav class="pagetoc"></nav></div>
+
+                        <h1 id="output-an-image"><a class="header" href="#output-an-image">Output an Image</a></h1>
+<h2 id="the-ppm-image-format"><a class="header" href="#the-ppm-image-format">The PPM Image Format</a></h2>
+<p>To build a render, we need to see an image. We choose the <a href="https://en.wikipedia.org/wiki/Netpbm">PPM image format</a>.
+Its inner format is this from Wikipeida:
+<img src="../resources/pictures/fig-1.01-ppm.jpg" alt="PPM Example" />
+First we need some code to output such an image.</p>
+<pre><pre class="playground"><code class="language-rust">fn main() {
+    const IMAGE_WIDTH: i32 = 256;
+    const IMAGE_HEIGHT: i32 = 256;
+
+    println!(&quot;P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255&quot;);
+
+    for j in (0..IMAGE_HEIGHT).rev() {
+        for i in 0..IMAGE_WIDTH {
+            let r = (i as f64) / (IMAGE_WIDTH as f64 - 1 as f64);
+            let g = (j as f64) / (IMAGE_HEIGHT as f64 - 1 as f64);
+            let b = 0.25;
+
+            let ir: i32 = (255.999 * r) as i32;
+            let ig: i32 = (255.999 * g) as i32;
+            let ib: i32 = (255.999 * b) as i32;
+
+            println!(&quot;{ir} {ig} {ib}&quot;);
+        }
+    }
+}</code></pre></pre>
+<h2 id="creating-an-image-file"><a class="header" href="#creating-an-image-file">Creating an Image File</a></h2>
+<p>That's the content of our image file, but we need to redirect it to a file like this:</p>
+<pre><code class="language-bash">./target/debug/ray_tracing &gt; image.ppm
+</code></pre>
+<p>This works on Mac and Linux, and things should be similar on Windows, adding a .exe postfix should work.</p>
+<p>Open such image.ppm file using <strong>ToyViewer</strong> on my Mac or any other tool you prefer, we should get such image:</p>
+<p><img src="../resources/pictures/img-1.01-first-ppm-image.png" alt="PPM image" /></p>
+<p>And its content should be something like this when opened by a text editor.</p>
+<pre><code class="language-text">P3
+256 256
+255
+0 255 63
+1 255 63
+2 255 63
+3 255 63
+4 255 63
+5 255 63
+6 255 63
+7 255 63
+8 255 63
+9 255 63
+...
+</code></pre>
+<h2 id="adding-a-progress-indicator"><a class="header" href="#adding-a-progress-indicator">Adding a Progress Indicator</a></h2>
+<p>A rending process may cost lots of time. So we need an indicator to track the process and
+is easier to identify an infinite loop or some other errors.</p>
+<p>We just use the std::error channel as our info output:</p>
+<pre><pre class="playground"><code class="language-rust"> fn main() {
+<span class="boring">    const IMAGE_WIDTH: i32 = 256;
+</span><span class="boring">    const IMAGE_HEIGHT: i32 = 256;
+</span><span class="boring">
+</span><span class="boring">    println!(&quot;P3\n{IMAGE_WIDTH} {IMAGE_HEIGHT}\n255&quot;);
+</span><span class="boring">
+</span>     for j in (0..IMAGE_HEIGHT).rev() {
+         eprintln!(&quot;\rScanlines remaining: {j}&quot;);
+<span class="boring">        for i in 0..IMAGE_WIDTH {
+</span><span class="boring">            let r = (i as f64) / (IMAGE_WIDTH as f64 - 1 as f64);
+</span><span class="boring">            let g = (j as f64) / (IMAGE_HEIGHT as f64 - 1 as f64);
+</span><span class="boring">            let b = 0.25;
+</span><span class="boring">
+</span><span class="boring">            let ir: i32 = (255.999 * r) as i32;
+</span><span class="boring">            let ig: i32 = (255.999 * g) as i32;
+</span><span class="boring">            let ib: i32 = (255.999 * b) as i32;
+</span><span class="boring">
+</span><span class="boring">            println!(&quot;{ir} {ig} {ib}&quot;);
+</span><span class="boring">        }
+</span>     }
+     eprintln!(&quot;\nDone&quot;);
+ }</code></pre></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../chapters/introduce.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="../chapters/chapter_2.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../chapters/introduce.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="../chapters/chapter_2.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src=".././theme/sidebar.js"></script>
+
+
+    </body>
+</html>
