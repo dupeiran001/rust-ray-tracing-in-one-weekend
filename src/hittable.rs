@@ -31,6 +31,10 @@ impl HitRecord {
         self.t
     }
 
+    pub fn p(&self) -> Vec3 {
+        self.p
+    }
+
     pub fn normal(&self) -> Vec3 {
         self.normal
     }

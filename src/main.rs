@@ -26,6 +26,7 @@ fn main() {
     const IMAGE_WIDTH: i32 = 400;
     const IMAGE_HEIGHT: i32 = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as i32;
     const SAMPLES_PER_PIXEL: i32 = 100;
+    const MAX_DEPTH: i32 = 50;
 
     // World
     let mut world = HittableList::new();
@@ -52,7 +53,7 @@ fn main() {
                 let v = (j as f64 + random_double()) / (IMAGE_HEIGHT - 1) as f64;
                 let r = cam.get_ray(u, v);
 
-                pixel_color += ray_color(&r, &world);
+                pixel_color += ray_color(&r, &world, MAX_DEPTH);
             }
             write_color(std::io::stdout(), pixel_color, SAMPLES_PER_PIXEL).unwrap();
         }
@@ -60,9 +61,14 @@ fn main() {
     eprintln!("\nDone");
 }
 
-fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
-    if let Some(rec) = world.hit(r, 0f64, Infinity) {
-        return 0.5 * (rec.normal() + Color::from(1f64, 1f64, 1f64));
+fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
+    if depth <= 0 {
+        return Color::from(0.0, 0.0, 0.0);
+    }
+
+    if let Some(rec) = world.hit(r, 0.0001f64, Infinity) {
+        let target: Point3 = rec.p() + Vec3::random_in_hemisphere(&rec.normal());
+        return 0.5 * ray_color(&Ray::from(rec.p(), target - rec.p()), world, depth - 1);
     }
     let unit_direction: Vec3 = r.direction().unit_vector();
     let t = 0.5 * (unit_direction.y() + 1f64);

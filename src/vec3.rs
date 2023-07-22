@@ -1,6 +1,8 @@
 use core::ops::*;
 use std::fmt::Display;
 
+use crate::rtweekend::{random_double, random_double_rng};
+
 #[derive(Debug)]
 pub struct Vec3 {
     e: (f64, f64, f64),
@@ -48,6 +50,46 @@ impl Vec3 {
 
     pub fn length_squared(&self) -> f64 {
         self.x() * self.x() + self.y() * self.y() + self.z() * self.z()
+    }
+
+    #[inline]
+    pub fn random() -> Self {
+        Vec3 {
+            e: (random_double(), random_double(), random_double()),
+        }
+    }
+
+    #[inline]
+    pub fn random_rng(min: f64, max: f64) -> Self {
+        Vec3 {
+            e: (
+                random_double_rng(min, max),
+                random_double_rng(min, max),
+                random_double_rng(min, max),
+            ),
+        }
+    }
+
+    pub fn random_in_unit_sphere() -> Self {
+        loop {
+            let p = Vec3::random_rng(-1.0, 1.0);
+            if p.length_squared() < 1f64 {
+                return p;
+            }
+        }
+    }
+
+    pub fn random_unit_vector() -> Self {
+        Vec3::unit_vector(&Vec3::random_in_unit_sphere())
+    }
+
+    pub fn random_in_hemisphere(normal: &Vec3) -> Self {
+        let in_unit_sphere = Vec3::random_in_unit_sphere();
+        if Vec3::dot(&in_unit_sphere, normal) > 0.0 {
+            in_unit_sphere
+        } else {
+            -in_unit_sphere
+        }
     }
 }
 
